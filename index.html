@@ -16,8 +16,6 @@
 
 5. Push the above changes to GitHub. 
 
-6. Choose whichever game you want to make from the choices below. The CrystalsCollector game is the recommended option, but if you are looking for an extra hard challenge then take a stab at the Star Wars exercise. (Note: Only choose the Star Wars Exercise if you are feeling very comfortable with the material covered in class. The Crystal Collector activity is plenty challenging enough!).
-
 ### Option One: CrystalsCollector Game (Recommended)
 
 ![Crystal Collector](Images/1-CrystalCollector.jpg)
@@ -50,6 +48,9 @@
 ##### Option 1 Game design notes
 
 * The random number shown at the start of the game should be between 19 - 120.
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;   <==
+}
 
 * Each crystal should have a random hidden value between 1 - 12.
 
@@ -58,7 +59,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>hangman</title>
+	<title>Crystal Capture</title>
 	<!-- Bootstrap File -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -66,43 +67,241 @@
   <script src="https://code.jquery.com/jquery.js"></script>
 
 
-  	<div class="container">
+  	
+
+
+
+</head>
+<body background="assets/images/eight_horns.png">
+    
+<div class="container">
 
     <!-- Jumbotron with Title -->
-    <div class="jumbotron">
-      <h1 class="text-center"><strong>Captain Planet: The Game!</strong></h1>
-      <h4 class="text-center">Rated M for Mature</h4>
+    <div class="jumbotron" >
+      <h1 class="text-center"><strong>Crystal Capture: The Game!</strong></h1>
+      <h2 class="text-center">Rated G for Great!</h2>
       <hr>
       <div class="text-center">
         <button class="btn btn-warning btn-xs theme-button"><span class="glyphicon glyphicon-music"></span> Play Theme!</button>
         <button class="btn btn-default btn-xs pause-button"><span class="glyphicon glyphicon-pause"></span> Pause Song</button>
       </div>
-
     </div>
+
     <div class="row">
+      <div class="col-lg-4">
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h1 class="panel-title">Rules of the Game</h1>
+          </div>
+          <div id="game-rules" class="panel-body">        
+             <h4 class="h41">A computer-generated number is generated at the start of each game.</h4>
+             <h4 class="h42">Each of the four crystals below will add a specific number of points to your total.</h4>
+             <h4 class="h43">If your score matches the computer-generated number, you win. If your score is greater than the computer-generated number, you lose.</h4>
+             <h4 class="h44">The number to match, as well as the values of crystals, change at the beginning of each game.</h4>          
+        </div>
+      </div>
+    </div>
+   </div>    
 
-      <!-- Left Panel -->
-      <div class="col-lg-6">
+    <div class="row">      
+      <div class="col-lg-4">        
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            <h2 class="panel-title">Value to match</h2>
+          </div>
+          <div class="panel-body">            
+            <h3 class="match-value"></h3>            
+          </div>
+        </div>
+      </div>
 
-        <!-- Controls (Superpower Grow/Shrink)-->
+      <div class="col-lg-2">
+         <div class="win-lose">          
+            <h4 id="wins">Wins: 0</h4>
+             <br>
+             <br>
+            <h4 id="losses">Losses: 0</h4>           
+          </div>
+       </div> 
+     </div> 
+
+    <div class="row">     
+      <div class="col-lg-8">        
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">Superpowers - Change Sizes!</h3>
+            <h3 class="panel-title">click on a button to add a value</h3>
           </div>
           <div class="panel-body">
             <div class="text-center">
-              <button class="btn btn-default btn-lg normal-button"><span class="glyphicon glyphicon-ok-sign"></span> Normal</button>
-              <button class="btn btn-primary btn-lg grow-button"><span class="glyphicon glyphicon-plus-sign"></span> Grow</button>
-              <button class="btn btn-danger btn-lg shrink-button"><span class="glyphicon glyphicon-minus-sign"></span> Shrink</button>
+              <button id="firstBtn" class="btn btn-default btn-lg normal-button"><span class="firstBtnSpan"></span> First Button</button>
+              <button id="secondBtn" class="btn btn-primary btn-lg grow-button"><span class="secondBtnSpan"></span> Second Button</button>
+              <button id="thirdBtn" class="btn btn-success btn-lg shrink-button"><span class="thirdBtnSpan"></span> Third Button</button>
+              <button id="fourthBtn" class="btn btn-danger btn-lg shrink-button"><span class="fourthBtnSpan"></span>Fourth Button</button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="row">      
+      <div class="col-lg-4">        
+        <div class="tot-score-hdr">
+           <h4>Your total score is: </h4>
+        </div>
+        <div class="tot-score-val">            
+            <h3 id="score">playerTotal</h3>            
+        </div>
+      </div>
+    </div>
+  </div>
+      
+
+     <script type="text/javascript">
+
+     $(".jumbotron").css({'background-image':'url("assets/images/eight_horns.png")'});
+      $(".game-rules").css({"background-color": "yellow"});
+     $(".panel-body").css({"background-color": "lightgreen"});    
+
+     $('#firstBtn').css('background-image', 'url("assets/images/diamond.png")');
+     $('#secondBtn').css('background-image', 'url("assets/images/emerald.png")');
+     $('#thirdBtn').css('background-image', 'url("assets/images/ruby1.png")');
+     $('#fourthBtn').css('background-image', 'url("assets/images/sapphire.png")');
+
+    // The random number shown at the start of the game should be between 19 - 120.
+      function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;   
+    }
+    //alert(getRandomInt(19, 120));
+// Each crystal should have a random hidden value between 1 - 12.
+      var playerTotal = 0;
+      var buttonValues = [];
+      var matchValue;
+      var nbrWins = 0;
+      var nbrLosses = 0;
+
+     for (var i = 0; i < 4; i++) {        
+        buttonValues[i] = getRandomInt(1, 12);
+        var currentValue = buttonValues[i];
+        console.log('currentValue ' + currentValue);
+        console.log('value of i ' + i);
+        for (var j = 0; j < i; j++)  {
+           console.log('value of j ' + j);
+            if (buttonValues[i] === buttonValues[j]) {
+                console.log('buttonValues in 2nd loop ' + buttonValues);
+                console.log('value of j ' + j);
+                i = i - 1;          //replace the current occurrence of the array when the loop increments
+                j = 9;             //break out of the loop
+                console.log('value of i ' + i + ' value of j ' + j);
+            } 
+        }        
+      } 	
+      console.log(buttonValues);    
+
+     $(document).ready(function() {
+   //  resetGame();
+      matchValue = getRandomInt(19, 120);
+       alert(matchValue)  ;                            
+      $(".match-value").html("<h4>" + matchValue + "</h4>");
+      $(".wins").html("<h4>Wins: " + nbrWins + "</h4>");
+      $(".losses").html("<h4>Losses: " + nbrLosses + "</h4>");      
+
+      // get button value for first button
+      $("#firstBtn").on("click", function() {
+         playerTotal = playerTotal + buttonValues[0];
+         $("#score").text(playerTotal);
+         console.log('first button ' + playerTotal);
+         didIWin(playerTotal, matchValue);
+        });
+      
+      $("#secondBtn").on("click", function() {
+        playerTotal = playerTotal + buttonValues[1];
+        $("#score").text(playerTotal);
+        console.log('second button ' + playerTotal);
+        didIWin(playerTotal, matchValue);
+      });
+
+      // get button value for third button
+      $("#thirdBtn").on("click", function() {
+        playerTotal = playerTotal + buttonValues[2];
+        $("#score").text(playerTotal);
+        console.log('third button ' + playerTotal);
+        didIWin(playerTotal, matchValue);
+      });
+
+      // get button value for fourth button
+      $("#fourthBtn").on("click", function() {
+        playerTotal = playerTotal + buttonValues[3];
+        $("#score").text(playerTotal);
+        console.log('fourth button ' + playerTotal);
+        didIWin(playerTotal, matchValue);
+      });     
+
+   function displayScore() {
+     $("#score").text(playerTotal);
+   }   
+
+   function didIWin(playerTotal, matchValue) {
+      alert('in didIWin')
+      console.log('playerTotal' + playerTotal);
+      console.log('matchValue' + matchValue);
+      if (playerTotal === matchValue) {
+        nbrWins++;
+        console.log('nbr wins: ' + nbrWins);
+        $("#wins").text("Wins: " + nbrWins);
+        resetGame();
+      } else {
+        if (playerTotal > matchValue) {
+          nbrLosses++;
+          console.log('nbr losses: ' + nbrLosses);
+          $("#losses").html("<h4>Losses: " + nbrLosses + "</h4>"); 
+          resetGame();
+        }
+      }
+   }   
+
+ function resetGame() {
+       playerTotal = 0;
+       buttonValues = [];
+       matchValue;
+
+     matchValue = getRandomInt(19, 120);  
+       
+     for (var i = 0; i < 4; i++) {        
+        buttonValues[i] = getRandomInt(1, 12);
+        var currentValue = buttonValues[i];
+        console.log('currentValue ' + currentValue);
+        console.log('value of i ' + i);
+        for (var j = 0; j < i; j++)  {
+           console.log('value of j ' + j);
+            if (buttonValues[i] === buttonValues[j]) {
+                console.log('buttonValues in 2nd loop ' + buttonValues);
+                console.log('value of j ' + j);
+                i = i - 1;          //replace the current occurrence of the array when the loop increments
+                j = 9;             //break out of the loop
+                console.log('value of i ' + i + ' value of j ' + j);
+            } 
+        }        
+      }   
+      console.log('buttonValues ' + buttonValues);  
+      console.log('Wins ' + nbrWins);  
+      console.log('Losses ' + nbrLosses);    
+  
+  
+      $("#wins").text("Wins: " + nbrWins);
+      $("#losses").text("Losses: " + nbrLosses); 
+      $(".match-value").text(matchValue);
+      $("#score").text(playerTotal);
+ }
 
 
 
 
-</head>
-<body>
+
+
+});
+     </script>
+
+
 
 </body>
 </html>
